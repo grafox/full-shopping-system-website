@@ -1,0 +1,75 @@
+<div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+  <h1 class="text-3xl font-bold text-slate-900 mb-6 border-b pb-4">Your Shopping Cart</h1>
+  @if (cartItems().length === 0) {
+    <div class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+        <path vector-effect="non-scaling-stroke" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-slate-900">Your cart is empty</h3>
+      <p class="mt-1 text-sm text-slate-500">Looks like you haven't added anything to your cart yet.</p>
+      <div class="mt-6">
+        <a routerLink="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+          Start Shopping
+        </a>
+      </div>
+    </div>
+  } @else {
+    <div class="flex flex-col lg:flex-row gap-8">
+      <div class="flex-grow">
+        <ul role="list" class="divide-y divide-slate-200">
+          @for (item of cartItems(); track item.product.id) {
+            <li class="flex py-6">
+              <div class="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-slate-200">
+                <img [src]="item.product.image" [alt]="item.product.name" class="h-full w-full object-cover object-center">
+              </div>
+
+              <div class="ml-4 flex flex-1 flex-col">
+                <div>
+                  <div class="flex justify-between text-base font-medium text-slate-900">
+                    <h3>
+                      <a [routerLink]="['/product', item.product.id]">{{ item.product.name }}</a>
+                    </h3>
+                    <p class="ml-4">${{ (item.product.price * item.quantity).toFixed(2) }}</p>
+                  </div>
+                  <p class="mt-1 text-sm text-slate-500">{{ item.product.brand }}</p>
+                </div>
+                <div class="flex flex-1 items-end justify-between text-sm">
+                  <div class="flex items-center">
+                    <label [for]="'quantity-' + item.product.id" class="mr-2 text-slate-500">Qty:</label>
+                    <input #quantityInput [id]="'quantity-' + item.product.id" type="number" min="1" [value]="item.quantity" (change)="updateQuantity(item, quantityInput.value)" class="w-16 rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary text-center bg-white">
+                  </div>
+                  <div class="flex">
+                    <button (click)="removeItem(item.product.id)" type="button" class="font-medium text-red-600 hover:text-red-500">Remove</button>
+                  </div>
+                </div>
+              </div>
+            </li>
+          }
+        </ul>
+      </div>
+
+      <div class="lg:w-1/3">
+        <div class="bg-slate-50 rounded-lg p-6 sticky top-24">
+          <h2 class="text-lg font-medium text-slate-900">Order summary</h2>
+          <div class="mt-6 space-y-4">
+            <div class="flex items-center justify-between">
+              <dt class="text-sm text-slate-600">Subtotal</dt>
+              <dd class="text-sm font-medium text-slate-900">${{ subtotal().toFixed(2) }}</dd>
+            </div>
+            <div class="flex items-center justify-between border-t border-slate-200 pt-4">
+              <dt class="text-sm text-slate-600">Shipping</dt>
+              <dd class="text-sm font-medium text-slate-900">${{ shipping().toFixed(2) }}</dd>
+            </div>
+            <div class="flex items-center justify-between border-t border-slate-200 pt-4">
+              <dt class="text-base font-medium text-slate-900">Order total</dt>
+              <dd class="text-base font-medium text-slate-900">${{ total().toFixed(2) }}</dd>
+            </div>
+          </div>
+          <div class="mt-6">
+            <a routerLink="/checkout" class="flex items-center justify-center rounded-md border border-transparent bg-primary px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700">Checkout</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+</div>
