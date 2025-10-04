@@ -6,6 +6,11 @@ import { ProductCardComponent } from '../../components/product-card/product-card
 import { finalize } from 'rxjs/operators';
 import { SearchService } from '../../services/search.service';
 
+interface ProductGroup {
+  category: string;
+  products: Product[];
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -19,16 +24,37 @@ export class HomeComponent implements OnInit {
   private allProducts = signal<Product[]>([]);
   isLoading = signal(true);
   searchTerm = this.searchService.searchTerm;
-
+  
   filteredProducts = computed(() => {
     const term = this.searchTerm().toLowerCase();
     if (!term) {
-      return this.allProducts();
+      return [];
     }
     return this.allProducts().filter(product =>
       product.name.toLowerCase().includes(term) ||
-      product.description.toLowerCase().includes(term)
+      product.description.toLowerCase().includes(term) ||
+      product.category.toLowerCase().includes(term) ||
+      product.brand.toLowerCase().includes(term)
     );
+  });
+  
+  groupedProducts = computed<ProductGroup[]>(() => {
+    const products = this.allProducts();
+    const groups = products.reduce((acc, product) => {
+      const category = product.category;
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(product);
+      return acc;
+    }, {} as Record<string, Product[]>);
+
+    return Object.keys(groups)
+      .sort() // Sort categories alphabetically
+      .map(category => ({
+        category,
+        products: groups[category].sort((a, b) => a.name.localeCompare(b.name)) // Sort products alphabetically
+      }));
   });
 
   ngOnInit(): void {

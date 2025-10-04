@@ -1,12 +1,11 @@
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
-import { ActivatedRoute, RouterLink } from '@angular/router';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit } from '@angular/core';
+import { ActivatedRoute, RouterLink, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { Product } from '../../models/product.model';
-import { switchMap, filter, tap, map } from 'rxjs/operators';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { switchMap, filter, tap, map } from 'rxjs';
 
 @Component({
   selector: 'app-product-details',
@@ -26,10 +25,14 @@ export class ProductDetailsComponent implements OnInit {
   isLoading = signal(true);
 
   private product$ = this.route.paramMap.pipe(
-    map(params => Number(params.get('id'))),
-    filter(id => !isNaN(id)),
+    // FIX: Explicitly type `params` as `ParamMap` to resolve `unknown` type error on `get`.
+    map((params: ParamMap) => Number(params.get('id'))),
+    // FIX: Explicitly type `id` and add validation to ensure it's a positive number.
+    // This prevents errors where `id` might be inferred as `unknown`.
+    filter((id: number) => !isNaN(id) && id > 0),
     tap(() => this.isLoading.set(true)),
-    switchMap(id => this.productService.getProductById(id)),
+    // FIX: Explicitly type `id` to fix `unknown` type assignment error.
+    switchMap((id: number) => this.productService.getProductById(id)),
     tap(() => this.isLoading.set(false))
   );
 
