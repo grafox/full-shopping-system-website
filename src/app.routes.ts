@@ -18,6 +18,11 @@ export const appRoutes: Routes = [
     title: 'Your Cart - Angular Shop'
   },
   {
+    path: 'wishlist',
+    loadComponent: () => import('./pages/wishlist/wishlist.component').then(m => m.WishlistComponent),
+    title: 'Your Wishlist - Angular Shop'
+  },
+  {
     path: 'checkout',
     loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent),
     title: 'Checkout - Angular Shop'

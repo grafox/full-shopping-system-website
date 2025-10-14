@@ -3,6 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { CartService } from '../../services/cart.service';
 import { SearchService } from '../../services/search.service';
+import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
   selector: 'app-header',
@@ -13,7 +14,9 @@ import { SearchService } from '../../services/search.service';
 export class HeaderComponent {
   cartService = inject(CartService);
   searchService = inject(SearchService);
+  wishlistService = inject(WishlistService);
   cartCount = this.cartService.cartCount;
+  wishlistCount = this.wishlistService.wishlistCount;
   searchTerm = this.searchService.searchTerm;
   isMenuOpen = false;
 

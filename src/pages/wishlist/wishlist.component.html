@@ -1,0 +1,23 @@
+<div class="bg-white rounded-lg shadow-lg p-6 md:p-8">
+  <h1 class="text-3xl font-bold text-slate-900 mb-6 border-b pb-4">Your Wishlist</h1>
+  @if (wishlistItems().length === 0) {
+    <div class="text-center py-12">
+      <svg class="mx-auto h-12 w-12 text-slate-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+      </svg>
+      <h3 class="mt-2 text-sm font-medium text-slate-900">Your wishlist is empty</h3>
+      <p class="mt-1 text-sm text-slate-500">Add products you love to your wishlist to keep track of them.</p>
+      <div class="mt-6">
+        <a routerLink="/" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+          Discover Products
+        </a>
+      </div>
+    </div>
+  } @else {
+    <div class="grid grid-cols-1 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-x-6">
+      @for (product of wishlistItems(); track product.id) {
+        <app-product-card [product]="product"></app-product-card>
+      }
+    </div>
+  }
+</div>

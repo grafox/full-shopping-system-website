@@ -62,9 +62,15 @@
             <input type="number" id="quantity" name="quantity" min="1" [max]="p.stock" [(ngModel)]="quantity" class="w-20 rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary bg-white text-center">
           </div>
           
-          <div class="mt-8">
-            <button (click)="addToCart()" class="w-full sm:w-auto flex items-center justify-center bg-primary text-white rounded-md py-3 px-8 text-base font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+          <div class="mt-8 flex items-center space-x-4">
+            <button (click)="addToCart()" class="flex-grow bg-primary text-white rounded-md py-3 px-8 text-base font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
               Add to Cart
+            </button>
+            <button (click)="toggleWishlist()" class="p-3 rounded-md text-slate-500 border border-slate-300 hover:text-red-500 hover:bg-red-50 hover:border-red-300 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+              <span class="sr-only">{{ isInWishlist() ? 'Remove from Wishlist' : 'Add to Wishlist' }}</span>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" [class]="isInWishlist() ? 'text-red-500 fill-current' : 'fill-none'" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+              </svg>
             </button>
           </div>
         </div>

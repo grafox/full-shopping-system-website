@@ -1,9 +1,10 @@
 
-import { Component, ChangeDetectionStrategy, input, inject } from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, inject, computed } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Product } from '../../models/product.model';
 import { CartService } from '../../services/cart.service';
+import { WishlistService } from '../../services/wishlist.service';
 
 @Component({
   selector: 'app-product-card',
@@ -14,8 +15,15 @@ import { CartService } from '../../services/cart.service';
 export class ProductCardComponent {
   product = input.required<Product>();
   cartService = inject(CartService);
+  wishlistService = inject(WishlistService);
+
+  isInWishlist = computed(() => this.wishlistService.wishlistIdSet().has(this.product().id));
 
   onAddToCart(): void {
     this.cartService.addToCart(this.product());
+  }
+
+  onToggleWishlist(): void {
+    this.wishlistService.toggleWishlist(this.product());
   }
 }
