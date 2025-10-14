@@ -21,9 +21,30 @@
         </div>
       </div>
     </a>
-    <div class="p-4 pt-0">
-       <button (click)="onAddToCart()" class="w-full bg-primary text-white rounded-md py-2 px-4 text-sm font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
+    <div class="p-4 pt-0 flex items-center space-x-2">
+       <button (click)="onAddToCart()" class="flex-1 bg-primary text-white rounded-md py-2 px-4 text-sm font-semibold hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-colors">
           Add to cart
+        </button>
+        <button
+          (click)="onToggleComparison()"
+          [disabled]="isComparisonFull() && !isInComparison()"
+          [title]="isComparisonFull() && !isInComparison() ? 'Comparison list is full (max 4)' : (isInComparison() ? 'Remove from Compare' : 'Add to Compare')"
+          class="p-2 rounded-md border border-slate-300 text-slate-600 hover:bg-slate-100 disabled:bg-slate-100 disabled:text-slate-400 disabled:cursor-not-allowed transition-colors"
+          [class.bg-primary]="isInComparison()"
+          [class.text-white]="isInComparison()"
+          [class.border-primary]="isInComparison()"
+          [class.hover:bg-indigo-700]="isInComparison()"
+          >
+          <span class="sr-only">Compare</span>
+          @if (isInComparison()) {
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5">
+              <path d="M12.378 1.602a.75.75 0 00-.756 0L3 6.632l9 5.25 9-5.25-8.622-5.03zM21.75 7.93l-9 5.25v9l8.628-5.032a.75.75 0 00.372-.648V7.93zM11.25 22.18v-9l-9-5.25v8.57a.75.75 0 00.372.648l8.628 5.032z" />
+            </svg>
+          } @else {
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 7.5l-9-5.25L3 7.5m18 0l-9 5.25m9-5.25v9l-9 5.25M3 7.5l9 5.25M3 7.5v9l9 5.25m0-9v9" />
+            </svg>
+          }
         </button>
     </div>
   </div>

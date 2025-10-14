@@ -23,6 +23,11 @@ export const appRoutes: Routes = [
     title: 'Your Wishlist - Angular Shop'
   },
   {
+    path: 'compare',
+    loadComponent: () => import('./pages/compare/compare.component').then(m => m.ComparisonComponent),
+    title: 'Compare Products - Angular Shop'
+  },
+  {
     path: 'checkout',
     loadComponent: () => import('./pages/checkout/checkout.component').then(m => m.CheckoutComponent),
     title: 'Checkout - Angular Shop'

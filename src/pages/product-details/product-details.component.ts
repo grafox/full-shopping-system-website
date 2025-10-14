@@ -1,3 +1,4 @@
+
 import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
 import { ActivatedRoute, RouterLink, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -5,6 +6,7 @@ import { FormsModule } from '@angular/forms';
 import { ProductService } from '../../services/product.service';
 import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
+import { ComparisonService } from '../../services/comparison.service';
 import { Product } from '../../models/product.model';
 import { switchMap, filter, tap, map } from 'rxjs';
 
@@ -19,7 +21,8 @@ export class ProductDetailsComponent implements OnInit {
   private route: ActivatedRoute = inject(ActivatedRoute);
   private productService: ProductService = inject(ProductService);
   private cartService: CartService = inject(CartService);
-  private wishlistService = inject(WishlistService);
+  private wishlistService: WishlistService = inject(WishlistService);
+  private comparisonService: ComparisonService = inject(ComparisonService);
 
   product = signal<Product | undefined>(undefined);
   quantity = signal(1);
@@ -30,6 +33,13 @@ export class ProductDetailsComponent implements OnInit {
     const p = this.product();
     return p ? this.wishlistService.wishlistIdSet().has(p.id) : false;
   });
+
+  isInComparison = computed(() => {
+    const p = this.product();
+    return p ? this.comparisonService.comparisonIdSet().has(p.id) : false;
+  });
+
+  isComparisonFull = this.comparisonService.isFull;
 
   private product$ = this.route.paramMap.pipe(
     // FIX: Explicitly type `params` as `ParamMap` to resolve `unknown` type error on `get`.
@@ -58,6 +68,13 @@ export class ProductDetailsComponent implements OnInit {
     const p = this.product();
     if (p) {
       this.wishlistService.toggleWishlist(p);
+    }
+  }
+
+  toggleComparison() {
+    const p = this.product();
+    if (p) {
+      this.comparisonService.toggleComparison(p);
     }
   }
 }
