@@ -1,5 +1,4 @@
-
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { Injectable, signal, computed, effect, inject, Signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { ProductService } from './product.service';
 
@@ -8,17 +7,24 @@ export const MAX_COMPARISON_ITEMS = 4;
 
 @Injectable({ providedIn: 'root' })
 export class ComparisonService {
-  private productService = inject(ProductService);
+  private productService: ProductService;
   
   comparisonItems = signal<Product[]>([]);
   
-  private productIds = computed(() => this.comparisonItems().map(p => p.id));
+  private productIds: Signal<number[]>;
 
-  comparisonCount = computed(() => this.comparisonItems().length);
-  comparisonIdSet = computed(() => new Set(this.productIds()));
-  isFull = computed(() => this.comparisonCount() >= MAX_COMPARISON_ITEMS);
+  comparisonCount: Signal<number>;
+  comparisonIdSet: Signal<Set<number>>;
+  isFull: Signal<boolean>;
 
   constructor() {
+    this.productService = inject(ProductService);
+
+    this.productIds = computed(() => this.comparisonItems().map(p => p.id));
+    this.comparisonCount = computed(() => this.comparisonItems().length);
+    this.comparisonIdSet = computed(() => new Set(this.productIds()));
+    this.isFull = computed(() => this.comparisonCount() >= MAX_COMPARISON_ITEMS);
+
     this.loadFromLocalStorage();
 
     effect(() => {

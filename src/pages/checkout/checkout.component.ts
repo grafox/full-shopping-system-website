@@ -1,4 +1,3 @@
-
 import { Component, ChangeDetectionStrategy, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -13,17 +12,17 @@ import { OrderService } from '../../services/order.service';
   imports: [CommonModule, RouterLink, ReactiveFormsModule]
 })
 export class CheckoutComponent implements OnInit {
-  private fb: FormBuilder = inject(FormBuilder);
-  private router: Router = inject(Router);
-  private orderService = inject(OrderService);
-  cartService: CartService = inject(CartService);
+  private fb: FormBuilder;
+  private router: Router;
+  private orderService: OrderService;
+  cartService: CartService;
+  checkoutForm: FormGroup;
 
-  checkoutForm!: FormGroup;
-
-  ngOnInit(): void {
-    if(this.cartService.cartItems().length === 0){
-      this.router.navigate(['/']);
-    }
+  constructor() {
+    this.fb = inject(FormBuilder);
+    this.router = inject(Router);
+    this.orderService = inject(OrderService);
+    this.cartService = inject(CartService);
 
     this.checkoutForm = this.fb.group({
       fullName: ['', [Validators.required, Validators.minLength(3)]],
@@ -32,6 +31,12 @@ export class CheckoutComponent implements OnInit {
       city: ['', Validators.required],
       zipCode: ['', [Validators.required, Validators.pattern('^[0-9]{5}(?:-[0-9]{4})?$')]],
     });
+  }
+
+  ngOnInit(): void {
+    if(this.cartService.cartItems().length === 0){
+      this.router.navigate(['/']);
+    }
   }
 
   get formControls() {

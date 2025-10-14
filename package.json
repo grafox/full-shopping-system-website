@@ -16,6 +16,8 @@
     "@angular/router": "^20.3.2",
     "@angular/common": "^20.3.0",
     "@angular/forms": "^20.3.2",
+    "chart.js": "^4.4.3",
+    "ng2-charts": "^6.0.1",
     "@angular/build": "^20.3.0",
     "@angular/cli": "^20.3.0",
     "@angular/compiler-cli": "^20.3.0",

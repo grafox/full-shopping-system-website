@@ -1,4 +1,3 @@
-
 <header class="bg-white shadow-md sticky top-0 z-50">
   <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex items-center justify-between h-16">
@@ -68,6 +67,16 @@
             </span>
           }
         </a>
+
+        <div class="hidden md:flex items-center ml-4">
+           @if(authService.isLoggedIn()) {
+             <a routerLink="/admin" class="text-sm font-medium text-slate-600 hover:text-primary transition-colors">Dashboard</a>
+             <button (click)="logout()" class="ml-4 text-sm font-medium text-slate-600 hover:text-primary transition-colors">Logout</button>
+           } @else {
+              <a routerLink="/login" class="text-sm font-medium text-white bg-primary hover:bg-indigo-700 px-4 py-2 rounded-md transition-colors">Login</a>
+           }
+        </div>
+        
         <div class="md:hidden ml-2">
           <button (click)="toggleMenu()" type="button" class="inline-flex items-center justify-center p-2 rounded-md text-slate-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-800 focus:ring-white" aria-controls="mobile-menu" aria-expanded="false">
             <span class="sr-only">Open main menu</span>
@@ -98,6 +107,14 @@
           <a routerLink="/compare" routerLinkActive="bg-slate-700 text-white" class="text-slate-600 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Compare</a>
           <a routerLink="/wishlist" routerLinkActive="bg-slate-700 text-white" class="text-slate-600 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Wishlist</a>
           <a routerLink="/cart" routerLinkActive="bg-slate-700 text-white" class="text-slate-600 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Cart</a>
+          <div class="border-t border-slate-700 pt-4 mt-4">
+             @if(authService.isLoggedIn()) {
+               <a routerLink="/admin" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Dashboard</a>
+               <button (click)="logout()" class="w-full text-left text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Logout</button>
+             } @else {
+               <a routerLink="/login" class="text-slate-300 hover:bg-slate-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium">Login</a>
+             }
+          </div>
         </div>
       </div>
     }

@@ -1,5 +1,4 @@
-
-import { Injectable, signal, computed } from '@angular/core';
+import { Injectable, signal, computed, Signal } from '@angular/core';
 import { CartItem } from '../models/cart.model';
 import { Product } from '../models/product.model';
 
@@ -9,17 +8,25 @@ export class CartService {
   
   cartItems = signal<CartItem[]>([]);
 
-  cartCount = computed(() => 
-    this.cartItems().reduce((acc, item) => acc + item.quantity, 0)
-  );
+  cartCount: Signal<number>;
+  subtotal: Signal<number>;
+  shipping: Signal<number>;
+  total: Signal<number>;
 
-  subtotal = computed(() => 
-    this.cartItems().reduce((acc, item) => acc + item.product.price * item.quantity, 0)
-  );
-
-  shipping = computed(() => this.cartItems().length > 0 ? this.SHIPPING_COST : 0);
+  constructor() {
+    this.cartCount = computed(() => 
+      this.cartItems().reduce((acc, item) => acc + item.quantity, 0)
+    );
   
-  total = computed(() => this.subtotal() + this.shipping());
+    this.subtotal = computed(() => 
+      this.cartItems().reduce((acc, item) => acc + item.product.price * item.quantity, 0)
+    );
+  
+    this.shipping = computed(() => this.cartItems().length > 0 ? this.SHIPPING_COST : 0);
+    
+    this.total = computed(() => this.subtotal() + this.shipping());
+  }
+
 
   addToCart(product: Product, quantity: number = 1): void {
     this.cartItems.update(items => {

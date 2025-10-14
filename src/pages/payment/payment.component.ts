@@ -12,19 +12,18 @@ import { OrderService } from '../../services/order.service';
   imports: [CommonModule, ReactiveFormsModule],
 })
 export class PaymentComponent implements OnInit {
-  private fb: FormBuilder = inject(FormBuilder);
-  private router: Router = inject(Router);
-  private orderService = inject(OrderService);
-  cartService: CartService = inject(CartService);
-
-  paymentForm!: FormGroup;
+  private fb: FormBuilder;
+  private router: Router;
+  private orderService: OrderService;
+  cartService: CartService;
+  paymentForm: FormGroup;
   paymentMethod = signal<'credit-card' | 'stripe'>('credit-card');
 
-  ngOnInit(): void {
-    if (this.cartService.cartItems().length === 0 || !this.orderService.shippingDetails()) {
-      this.router.navigate(['/']);
-      return;
-    }
+  constructor() {
+    this.fb = inject(FormBuilder);
+    this.router = inject(Router);
+    this.orderService = inject(OrderService);
+    this.cartService = inject(CartService);
 
     this.paymentForm = this.fb.group({
       cardholderName: ['', Validators.required],
@@ -32,6 +31,13 @@ export class PaymentComponent implements OnInit {
       expiryDate: ['', [Validators.required, Validators.pattern('^(0[1-9]|1[0-2])\\/?([0-9]{2})$')]],
       cvv: ['', [Validators.required, Validators.pattern('^[0-9]{3,4}$')]],
     });
+  }
+
+  ngOnInit(): void {
+    if (this.cartService.cartItems().length === 0 || !this.orderService.shippingDetails()) {
+      this.router.navigate(['/']);
+      return;
+    }
   }
 
   selectPaymentMethod(method: 'credit-card' | 'stripe'): void {

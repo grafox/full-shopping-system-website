@@ -1,0 +1,71 @@
+<div class="max-w-4xl mx-auto">
+  <div class="flex justify-between items-center mb-6">
+    <h1 class="text-3xl font-bold text-slate-800">{{ pageTitle() }}</h1>
+    <a routerLink="/admin/users" class="text-sm font-medium text-primary hover:text-indigo-700">
+      &larr; Back to Users
+    </a>
+  </div>
+
+  <div class="bg-white p-8 rounded-lg shadow-md">
+    <form [formGroup]="userForm" (ngSubmit)="onSubmit()" novalidate>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Name -->
+        <div class="md:col-span-2">
+          <label for="name" class="block text-sm font-medium text-slate-700">Full Name</label>
+          <input type="text" id="name" formControlName="name" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary bg-white py-2 px-3">
+        </div>
+
+        <!-- Email -->
+        <div>
+          <label for="email" class="block text-sm font-medium text-slate-700">Email</label>
+          <input type="email" id="email" formControlName="email" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary bg-white py-2 px-3">
+        </div>
+
+        <!-- Role -->
+        <div>
+          <label for="role" class="block text-sm font-medium text-slate-700">Role</label>
+          <select id="role" formControlName="role" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary bg-white py-2 px-3">
+            @for(role of roles; track role) {
+              <option [value]="role">{{ role }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Password -->
+        <div class="md:col-span-2">
+          <hr class="my-4">
+          <h3 class="text-lg font-medium text-slate-800">{{ isEditMode() ? 'Change Password' : 'Set Password' }}</h3>
+          @if(isEditMode()) {
+            <p class="text-sm text-slate-500 mb-4">Leave fields blank to keep current password.</p>
+          }
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-700">New Password</label>
+          <input type="password" id="password" formControlName="password" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary bg-white py-2 px-3">
+          @if(userForm.get('password')?.hasError('minlength')) {
+            <p class="mt-1 text-sm text-red-600">Password must be at least 8 characters long.</p>
+          }
+          @if(userForm.get('password')?.hasError('required')) {
+            <p class="mt-1 text-sm text-red-600">Password is required.</p>
+          }
+        </div>
+
+        <div>
+          <label for="confirmPassword" class="block text-sm font-medium text-slate-700">Confirm New Password</label>
+          <input type="password" id="confirmPassword" formControlName="confirmPassword" class="mt-1 block w-full rounded-md border-slate-300 shadow-sm focus:border-primary focus:ring-primary bg-white py-2 px-3">
+           @if(userForm.get('confirmPassword')?.hasError('passwordsMismatch')) {
+            <p class="mt-1 text-sm text-red-600">Passwords do not match.</p>
+          }
+        </div>
+
+      </div>
+
+      <div class="mt-8 border-t pt-6 text-right">
+        <button type="submit" [disabled]="userForm.invalid" class="inline-flex justify-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary disabled:bg-slate-400">
+          {{ isEditMode() ? 'Save Changes' : 'Add User' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

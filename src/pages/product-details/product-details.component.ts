@@ -1,5 +1,5 @@
 
-import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed } from '@angular/core';
+import { Component, ChangeDetectionStrategy, inject, signal, OnInit, computed, Signal } from '@angular/core';
 import { ActivatedRoute, RouterLink, ParamMap } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -8,7 +8,7 @@ import { CartService } from '../../services/cart.service';
 import { WishlistService } from '../../services/wishlist.service';
 import { ComparisonService } from '../../services/comparison.service';
 import { Product } from '../../models/product.model';
-import { switchMap, filter, tap, map } from 'rxjs';
+import { switchMap, filter, tap, map, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-product-details',
@@ -17,41 +17,55 @@ import { switchMap, filter, tap, map } from 'rxjs';
   imports: [CommonModule, RouterLink, FormsModule],
 })
 export class ProductDetailsComponent implements OnInit {
-  // FIX: Explicitly type injected services to resolve type inference issues.
-  private route: ActivatedRoute = inject(ActivatedRoute);
-  private productService: ProductService = inject(ProductService);
-  private cartService: CartService = inject(CartService);
-  private wishlistService: WishlistService = inject(WishlistService);
-  private comparisonService: ComparisonService = inject(ComparisonService);
+  // Services
+  private route: ActivatedRoute;
+  private productService: ProductService;
+  private cartService: CartService;
+  private wishlistService: WishlistService;
+  private comparisonService: ComparisonService;
 
+  // State signals
   product = signal<Product | undefined>(undefined);
   quantity = signal(1);
-
   isLoading = signal(true);
 
-  isInWishlist = computed(() => {
-    const p = this.product();
-    return p ? this.wishlistService.wishlistIdSet().has(p.id) : false;
-  });
+  // Derived state signals (computed)
+  isInWishlist: Signal<boolean>;
+  isInComparison: Signal<boolean>;
+  isComparisonFull: Signal<boolean>;
 
-  isInComparison = computed(() => {
-    const p = this.product();
-    return p ? this.comparisonService.comparisonIdSet().has(p.id) : false;
-  });
+  private product$: Observable<Product | undefined>;
 
-  isComparisonFull = this.comparisonService.isFull;
+  constructor() {
+    // Inject all services within the constructor to guarantee injection context
+    this.route = inject(ActivatedRoute);
+    this.productService = inject(ProductService);
+    this.cartService = inject(CartService);
+    this.wishlistService = inject(WishlistService);
+    this.comparisonService = inject(ComparisonService);
 
-  private product$ = this.route.paramMap.pipe(
-    // FIX: Explicitly type `params` as `ParamMap` to resolve `unknown` type error on `get`.
-    map((params: ParamMap) => Number(params.get('id'))),
-    // FIX: Explicitly type `id` and add validation to ensure it's a positive number.
-    // This prevents errors where `id` might be inferred as `unknown`.
-    filter((id: number) => !isNaN(id) && id > 0),
-    tap(() => this.isLoading.set(true)),
-    // FIX: Explicitly type `id` to fix `unknown` type assignment error.
-    switchMap((id: number) => this.productService.getProductById(id)),
-    tap(() => this.isLoading.set(false))
-  );
+    // Initialize computed signals that depend on services
+    this.isInWishlist = computed(() => {
+      const p = this.product();
+      return p ? this.wishlistService.wishlistIdSet().has(p.id) : false;
+    });
+
+    this.isInComparison = computed(() => {
+      const p = this.product();
+      return p ? this.comparisonService.comparisonIdSet().has(p.id) : false;
+    });
+    
+    this.isComparisonFull = this.comparisonService.isFull;
+
+    // Initialize the observable stream
+    this.product$ = this.route.paramMap.pipe(
+      map((params: ParamMap) => Number(params.get('id'))),
+      filter((id: number) => !isNaN(id) && id > 0),
+      tap(() => this.isLoading.set(true)),
+      switchMap((id: number) => this.productService.getProductById(id)),
+      tap(() => this.isLoading.set(false))
+    );
+  }
 
   ngOnInit() {
     this.product$.subscribe(p => this.product.set(p));

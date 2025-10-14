@@ -1,0 +1,60 @@
+<div class="flex justify-between items-center mb-6">
+  <h1 class="text-3xl font-bold text-slate-800">Manage Products</h1>
+  <a routerLink="/admin/products/add" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-primary hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary">
+    Add Product
+  </a>
+</div>
+
+<div class="bg-white rounded-lg shadow-md overflow-hidden">
+  <div class="overflow-x-auto">
+    <table class="w-full text-sm text-left text-slate-500">
+      <thead class="text-xs text-slate-700 uppercase bg-slate-50">
+        <tr>
+          <th scope="col" class="px-6 py-3">Product Name</th>
+          <th scope="col" class="px-6 py-3">Category</th>
+          <th scope="col" class="px-6 py-3">Price</th>
+          <th scope="col" class="px-6 py-3">Stock</th>
+          <th scope="col" class="px-6 py-3"><span class="sr-only">Actions</span></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (isLoading()) {
+          @for(i of [1,2,3,4,5]; track i) {
+            <tr class="bg-white border-b animate-pulse">
+              <td class="px-6 py-4"><div class="h-4 bg-slate-200 rounded w-3/4"></div></td>
+              <td class="px-6 py-4"><div class="h-4 bg-slate-200 rounded w-1/2"></div></td>
+              <td class="px-6 py-4"><div class="h-4 bg-slate-200 rounded w-1/4"></div></td>
+              <td class="px-6 py-4"><div class="h-4 bg-slate-200 rounded w-1/4"></div></td>
+              <td class="px-6 py-4"><div class="h-4 bg-slate-200 rounded w-1/2"></div></td>
+            </tr>
+          }
+        } @else if (products().length > 0) {
+          @for (product of products(); track product.id) {
+            <tr class="bg-white border-b hover:bg-slate-50">
+              <th scope="row" class="px-6 py-4 font-medium text-slate-900 whitespace-nowrap">
+                <div class="flex items-center">
+                  <img [src]="product.image" [alt]="product.name" class="w-10 h-10 rounded-md object-cover mr-4">
+                  <span>{{ product.name }}</span>
+                </div>
+              </th>
+              <td class="px-6 py-4">{{ product.category }}</td>
+              <td class="px-6 py-4">${{ product.price.toFixed(2) }}</td>
+              <td class="px-6 py-4">{{ product.stock }}</td>
+              <td class="px-6 py-4 text-right space-x-2">
+                <a [routerLink]="['/admin/products/edit', product.id]" class="font-medium text-primary hover:underline">Edit</a>
+                <button (click)="deleteProduct(product.id)" class="font-medium text-red-600 hover:underline">Delete</button>
+              </td>
+            </tr>
+          }
+        } @else {
+          <tr>
+            <td colspan="5" class="text-center py-12 px-6">
+              <h3 class="text-lg font-medium text-slate-900">No Products Found</h3>
+              <p class="mt-1 text-sm text-slate-500">There are no products to display. Try adding one!</p>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>

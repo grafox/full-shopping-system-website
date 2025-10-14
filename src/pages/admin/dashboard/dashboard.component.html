@@ -1,0 +1,30 @@
+<h1 class="text-3xl font-bold text-slate-800">Dashboard</h1>
+<p class="mt-2 text-slate-600">Welcome back, {{ currentUser()?.name }}!</p>
+
+<div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+  <!-- Card for admins -->
+  @if (authService.isAdmin()) {
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold text-slate-900">Manage Products</h2>
+      <p class="mt-2 text-slate-500">Add, edit, or delete products in the store.</p>
+      <a routerLink="/admin/products" class="mt-4 inline-block text-primary hover:text-indigo-700 font-medium">Go to Products &rarr;</a>
+    </div>
+    <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold text-slate-900">View Users</h2>
+      <p class="mt-2 text-slate-500">See the list of registered users.</p>
+      <a routerLink="/admin/users" class="mt-4 inline-block text-primary hover:text-indigo-700 font-medium">View Users &rarr;</a>
+    </div>
+     <div class="bg-white p-6 rounded-lg shadow-md">
+      <h2 class="text-xl font-semibold text-slate-900">Product Analysis</h2>
+      <p class="mt-2 text-slate-500">Visualize product distribution by category.</p>
+      <a routerLink="/admin/analysis" class="mt-4 inline-block text-primary hover:text-indigo-700 font-medium">See Analysis &rarr;</a>
+    </div>
+  }
+
+  <!-- Card for all users -->
+  <div class="bg-white p-6 rounded-lg shadow-md">
+    <h2 class="text-xl font-semibold text-slate-900">Go to Shop</h2>
+    <p class="mt-2 text-slate-500">Return to the main storefront to browse products.</p>
+    <a routerLink="/" class="mt-4 inline-block text-primary hover:text-indigo-700 font-medium">Back to Shop &rarr;</a>
+  </div>
+</div>

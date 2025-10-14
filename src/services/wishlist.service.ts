@@ -1,4 +1,4 @@
-import { Injectable, signal, computed, effect, inject } from '@angular/core';
+import { Injectable, signal, computed, effect, inject, Signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { ProductService } from './product.service';
 
@@ -6,16 +6,22 @@ const WISHLIST_KEY = 'angular_shop_wishlist';
 
 @Injectable({ providedIn: 'root' })
 export class WishlistService {
-  private productService = inject(ProductService);
+  private productService: ProductService;
   
   wishlistItems = signal<Product[]>([]);
   
-  private productIds = computed(() => this.wishlistItems().map(p => p.id));
+  private productIds: Signal<number[]>;
 
-  wishlistCount = computed(() => this.wishlistItems().length);
-  wishlistIdSet = computed(() => new Set(this.productIds()));
+  wishlistCount: Signal<number>;
+  wishlistIdSet: Signal<Set<number>>;
 
   constructor() {
+    this.productService = inject(ProductService);
+
+    this.productIds = computed(() => this.wishlistItems().map(p => p.id));
+    this.wishlistCount = computed(() => this.wishlistItems().length);
+    this.wishlistIdSet = computed(() => new Set(this.productIds()));
+
     this.loadFromLocalStorage();
 
     effect(() => {

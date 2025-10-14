@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Product } from '../models/product.model';
 import { of, Observable } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
-const PRODUCTS: Product[] = [
+const PRODUCTS_DATA: Product[] = [
   {
     id: 1,
     name: 'Wireless Headphones',
@@ -692,12 +692,38 @@ const PRODUCTS: Product[] = [
 
 @Injectable({ providedIn: 'root' })
 export class ProductService {
+  private products = signal<Product[]>(PRODUCTS_DATA);
+
   getProducts(): Observable<Product[]> {
-    return of(PRODUCTS).pipe(delay(200));
+    return of(this.products()).pipe(delay(200));
   }
 
   getProductById(id: number): Observable<Product | undefined> {
-    const product = PRODUCTS.find(p => p.id === id);
+    const product = this.products().find(p => p.id === id);
     return of(product).pipe(delay(100));
+  }
+
+  addProduct(productData: Omit<Product, 'id' | 'rating' | 'reviews'>): Observable<Product> {
+    const newId = Math.max(...this.products().map(p => p.id)) + 1;
+    const newProduct: Product = {
+      ...productData,
+      id: newId,
+      rating: 0,
+      reviews: 0,
+    };
+    this.products.update(products => [...products, newProduct]);
+    return of(newProduct).pipe(delay(100));
+  }
+
+  updateProduct(updatedProduct: Product): Observable<Product> {
+    this.products.update(products => 
+      products.map(p => p.id === updatedProduct.id ? updatedProduct : p)
+    );
+    return of(updatedProduct).pipe(delay(100));
+  }
+
+  deleteProduct(productId: number): Observable<{ success: boolean }> {
+    this.products.update(products => products.filter(p => p.id !== productId));
+    return of({ success: true }).pipe(delay(100));
   }
 }
